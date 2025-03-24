@@ -15,8 +15,6 @@ export class GstoreDBStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
 
     super(scope, id, props);
-
-
     this.UserTable = new Table(this, "userTable" , {
       tableName : "UserTable",
       partitionKey : {
