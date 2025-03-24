@@ -1,50 +1,80 @@
 import * as cdk from "aws-cdk-lib";
-import { UserPool, UserPoolIdentityProviderGoogle } from "aws-cdk-lib/aws-cognito";
+import {
+  CfnUserPoolGroup,
+  ProviderAttribute,
+  UserPool,
+  UserPoolClientIdentityProvider,
+  UserPoolIdentityProviderGoogle,
+} from "aws-cdk-lib/aws-cognito";
+import { CfnUserGroup } from "aws-cdk-lib/aws-elasticache";
 import { Construct } from "constructs";
+import * as dotenv from "dotenv";
+
+dotenv.config();
 
 export class GstoreUserStack extends cdk.Stack {
   public readonly userPool: UserPool;
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
+    this.userPool = new UserPool(this, "gstoreUserpool", {
+      autoVerify: {
+        email: true,
+      },
+      signInAliases: {
+        email: true,
+        username: true,
+      },
+      passwordPolicy: {
+        minLength: 8,
+        requireDigits: true,
+        requireLowercase: true,
+        requireSymbols: true,
+      },
+      userPoolName: "GstoreUserPool",
+      removalPolicy: cdk.RemovalPolicy.RETAIN_ON_UPDATE_OR_DELETE,
+    });
 
-    const googleAuth = new UserPoolIdentityProviderGoogle(this,"googleIdentity", {
-        
-    })
-
-    this.userPool = new UserPool(this, "gstore-userpool", {
-
-        autoVerify : {
-            email : true
+    const googleAuth = new UserPoolIdentityProviderGoogle(
+      this,
+      "googleIdentity",
+      {
+        userPool: this.userPool,
+        clientId: process.env.GOOGLE_CLIENT!!,
+        clientSecret: process.env.GOOGLE_SECRET!!,
+        scopes: ["email"],
+        attributeMapping: {
+          email: ProviderAttribute.GOOGLE_EMAIL,
         },
-        signInAliases : {
-            email :true,
-            username : true
-        },
-        passwordPolicy: {
-            minLength :8 ,
-            requireDigits : true,
-            requireLowercase : true,
-            requireSymbols: true
-        },
-        userPoolName : "GstoreUserPool",
-        
-    })
+      }
+    );
 
-
-    this.userPool.addClient("appClient" ,{
-    authFlows :{
-        adminUserPassword : true,
+    const webClient = this.userPool.addClient("appClient", {
+      authFlows: {
+        adminUserPassword: true,
         user: true,
-        userSrp :true,
-        userPassword: true
-    },
-    authSessionValidity: cdk.Duration.minutes(12),
-    idTokenValidity : cdk.Duration.days(1),
-    })
+        userSrp: true,
+        userPassword: true,
+      },
+      oAuth: {
+        flows: {
+          authorizationCodeGrant: true,
+        },
+        callbackUrls: ["https://google.com"],
+      },
+      supportedIdentityProviders: [UserPoolClientIdentityProvider.GOOGLE],
+      authSessionValidity: cdk.Duration.minutes(12),
+      idTokenValidity: cdk.Duration.days(1),
+    });
+
+    webClient.node.addDependency(googleAuth);
+    const admingrp = new CfnUserPoolGroup(this, "admingrp", {
+      userPoolId: this.userPool.userPoolId,
+      groupName: "admin_grp",
+    });
+    const customer_group = new CfnUserPoolGroup(this, "customergrp", {
+      userPoolId: this.userPool.userPoolId,
+      groupName: "customergrp",
+    });
   }
 }
-
-
-//242400249942-va4jc13ajfdv3ainihrl74hp0jjl5gd1.apps.googleusercontent.com
-//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

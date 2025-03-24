@@ -26,7 +26,7 @@ export class GstoreDBStack extends cdk.Stack {
         type : AttributeType.NUMBER
         
       },
-      removalPolicy : cdk.RemovalPolicy.RETAIN
+      removalPolicy : cdk.RemovalPolicy.RETAIN_ON_UPDATE_OR_DELETE
     })
 
     this.SubCategoryTable = new Table(this, "subCategoryTable" , {
@@ -40,7 +40,7 @@ export class GstoreDBStack extends cdk.Stack {
         type : AttributeType.STRING
         
       },
-      removalPolicy : cdk.RemovalPolicy.RETAIN
+      removalPolicy : cdk.RemovalPolicy.RETAIN_ON_UPDATE_OR_DELETE
     })
 
     this.CategoryTable = new Table(this, "categoryTable" , {
@@ -54,7 +54,7 @@ export class GstoreDBStack extends cdk.Stack {
         type : AttributeType.STRING
         
       },
-      removalPolicy : cdk.RemovalPolicy.RETAIN
+      removalPolicy : cdk.RemovalPolicy.RETAIN_ON_UPDATE_OR_DELETE
     })
     this.ProductTable = new Table(this, "productTable" , {
       tableName : "ProductTable",
@@ -67,7 +67,7 @@ export class GstoreDBStack extends cdk.Stack {
         type : AttributeType.STRING
         
       },
-      removalPolicy : cdk.RemovalPolicy.RETAIN
+      removalPolicy : cdk.RemovalPolicy.RETAIN_ON_UPDATE_OR_DELETE
     })
     this.OrderTable = new Table(this, "orderTable" , {
       tableName : "OrderTable",
@@ -80,7 +80,7 @@ export class GstoreDBStack extends cdk.Stack {
         type : AttributeType.NUMBER
         
       },
-      removalPolicy : cdk.RemovalPolicy.RETAIN
+      removalPolicy : cdk.RemovalPolicy.RETAIN_ON_UPDATE_OR_DELETE
     })
     this.OrderHistoryTable = new Table(this, "orderHistoryTable" , {
       tableName : "OrderHistoryTable",
@@ -93,7 +93,7 @@ export class GstoreDBStack extends cdk.Stack {
         type : AttributeType.NUMBER
         
       },
-      removalPolicy : cdk.RemovalPolicy.RETAIN
+      removalPolicy : cdk.RemovalPolicy.RETAIN_ON_UPDATE_OR_DELETE
     })
 
 

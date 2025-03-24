@@ -13,4 +13,4 @@ const envConfig = app.node.tryGetContext(envType);
 new GstoreDBStack(app, 'GstoreStack', {
 });
 
-new GstoreUserStack(app, "UserStack")
+new GstoreUserStack(app, "UserStack", {})
