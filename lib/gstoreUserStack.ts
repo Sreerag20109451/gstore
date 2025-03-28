@@ -20,10 +20,11 @@ export class GstoreUserStack extends cdk.Stack {
     this.userPool = new UserPool(this, "gstoreUserpool", {
       autoVerify: {
         email: true,
+        phone: true
       },
       signInAliases: {
         email: true,
-        username: true,
+        phone : true
       },
       passwordPolicy: {
         minLength: 8,
